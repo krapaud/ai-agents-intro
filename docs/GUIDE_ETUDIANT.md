@@ -1,4 +1,4 @@
-# Guide étudiant — Comprendre et réaliser le projet AI Study Guide Generator
+# Guide étudiant : Comprendre et réaliser le projet AI Study Guide Generator
 
 Ce document explique, avec des mots simples, ce que demande chaque tâche du
 projet, pourquoi elle existe, et ce qu'il faut concrètement produire. Il
@@ -31,7 +31,7 @@ mécaniques comme écrire un fichier ou vérifier qu'une section existe.
 
 ---
 
-## Tâche 0 — Créer la structure du projet
+## Tâche 0 : Créer la structure du projet
 
 **Ce qu'on te demande :** créer les dossiers et fichiers vides qui vont
 accueillir le code, avant même d'écrire la logique.
@@ -41,6 +41,7 @@ vite illisible. En séparant `agents/`, `tools/`, `data/`, `output/` dès le
 départ, chaque partie du système a un endroit clair où vivre.
 
 **Ce que tu dois faire concrètement :**
+
 - Créer les dossiers `agents/`, `tools/`, `output/`, `data/`.
 - Créer les fichiers `README.md`, `requirements.txt`, `.env.example`,
   `.gitignore`, `main.py` à la racine.
@@ -54,7 +55,7 @@ Tu n'as pas besoin d'écrire la logique tout de suite. Juste la structure.
 
 ---
 
-## Tâche 1 — Installer et configurer le modèle local
+## Tâche 1 : Installer et configurer le modèle local
 
 **Ce qu'on te demande :** faire fonctionner un modèle de langage **en
 local** sur ta machine, sans dépendre d'une API payante.
@@ -73,43 +74,55 @@ Google ADK  →  LiteLLM  →  Ollama  →  Modèle local
 - **Google ADK** est le framework qui gère les agents (rôle, instructions,
   exécution, sessions).
 
-Si une seule de ces couches est mal configurée, rien ne fonctionne — d'où
+Si une seule de ces couches est mal configurée, rien ne fonctionne, d'où
 l'importance de tester chaque couche séparément avant d'assembler.
 
 **Ce que tu dois faire concrètement :**
 
 1. Créer un environnement virtuel Python et l'activer :
+
    ```bash
    python3 -m venv .venv
    source .venv/bin/activate
    ```
+
 2. Installer les dépendances (`google-adk`, `litellm`, `python-dotenv` dans
    `requirements.txt`) :
+
    ```bash
    pip install -r requirements.txt
    ```
+
 3. Installer Ollama (ex. via Homebrew sur macOS) :
+
    ```bash
    brew install ollama
    brew services start ollama
    ```
+
 4. Télécharger un petit modèle local :
+
    ```bash
    ollama pull llama3.2:1b
    ```
+
 5. **Tester le modèle directement avec Ollama, avant de toucher au code
    Python** :
+
    ```bash
    ollama run llama3.2:1b "Say hello in one short sentence."
    ```
-   Si ça ne répond pas ici, ça ne répondra pas non plus dans ton agent —
+
+   Si ça ne répond pas ici, ça ne répondra pas non plus dans ton agent :
    inutile de déboguer le code Python avant d'avoir validé cette étape.
 6. Documenter dans `.env.example` les variables attendues (sans valeurs
    secrètes, juste des exemples) :
+
    ```
    OLLAMA_API_BASE=http://localhost:11434
    MODEL_NAME=ollama_chat/<nom-de-ton-modele>
    ```
+
 7. Copier `.env.example` vers `.env` (fichier réel, non commité) et
    l'ajuster si besoin.
 
@@ -118,7 +131,7 @@ recevoir une vraie réponse texte.
 
 ---
 
-## Tâche 2 — Créer ton premier agent (Explainer Agent)
+## Tâche 2 : Créer ton premier agent (Explainer Agent)
 
 **Ce qu'on te demande :** construire un agent capable de recevoir un sujet
 et de répondre avec une explication structurée.
@@ -135,8 +148,8 @@ réponses exploitables par le reste du programme.
 - Créer `agents/explainer_agent.py` avec un `Agent` ADK dont le modèle est
   `LiteLlm(model="ollama_chat/<ton-modele>")`.
 - Écrire une instruction claire qui dit exactement quoi produire : ici,
-  trois sections précises — `## Simple Explanation`, `## Key Concepts`,
-  `## Example` — rien d'autre.
+  trois sections précises : `## Simple Explanation`, `## Key Concepts`,
+  `## Example`, rien d'autre.
 - Exécuter cet agent avec un prompt simple (le sujet) et récupérer le texte
   de réponse.
 
@@ -163,14 +176,14 @@ explication structurée en Markdown dans le terminal.
 
 ---
 
-## Tâche 3 — Outil pour sauvegarder le Markdown
+## Tâche 3 : Outil pour sauvegarder le Markdown
 
 **Ce qu'on te demande :** écrire une fonction Python "normale" (pas un
 agent, pas d'IA) qui sauvegarde du texte dans un fichier.
 
 **Pourquoi un outil déterministe :** un modèle de langage peut varier d'une
 exécution à l'autre. Mais écrire un fichier ne devrait jamais être
-"créatif" — on veut un comportement 100% prévisible : même entrée, même
+"créatif" : on veut un comportement 100% prévisible : même entrée, même
 résultat. C'est le principe général : laisser le modèle gérer la partie
 flexible (le texte), et laisser du code classique gérer la partie mécanique
 (le fichier).
@@ -193,10 +206,10 @@ flexible (le texte), et laisser du code classique gérer la partie mécanique
 
 ---
 
-## Tâche 4 — Outil de validation des sections
+## Tâche 4 : Outil de validation des sections
 
 **Ce qu'on te demande :** écrire une fonction qui vérifie que le Markdown
-généré contient bien toutes les sections attendues — sans juger la qualité
+généré contient bien toutes les sections attendues, sans juger la qualité
 du contenu, juste la structure.
 
 **Pourquoi :** un modèle peut oublier une section, ou mal la nommer. Une
@@ -231,10 +244,10 @@ est valide.
 
 ---
 
-## Tâche 5 — Practice Designer Agent
+## Tâche 5 : Practice Designer Agent
 
 **Ce qu'on te demande :** un deuxième agent, séparé du premier, qui
-construit un exercice pratique **à partir de** l'explication déjà générée —
+construit un exercice pratique **à partir de** l'explication déjà générée,
 sans la répéter.
 
 **Pourquoi séparer cet agent de l'Explainer :** si un seul agent devait tout
@@ -260,7 +273,7 @@ enrichir le titre demandé (ex. `## Practice Exercise: Enumerate and Match
 HTTP Status Codes` au lieu de `## Practice Exercise`) ou à ajouter des
 sous-titres `###` non demandés. Rendre l'instruction très explicite
 ("exactement ce titre, sans mots supplémentaires sur la ligne du titre")
-réduit ce problème, mais ne l'élimine pas toujours — c'est pour ça que
+réduit ce problème, mais ne l'élimine pas toujours, c'est pour ça que
 l'outil de validation (tâche 4) doit rester tolérant sur la forme exacte.
 
 **Résultat attendu :** en donnant le sujet + l'explication à cet agent, tu
@@ -268,10 +281,10 @@ obtiens un exercice cohérent avec ce qui a été expliqué avant.
 
 ---
 
-## Tâche 6 — Reviewer Agent
+## Tâche 6 : Reviewer Agent
 
 **Ce qu'on te demande :** un troisième agent qui **relit** un brouillon déjà
-assemblé et donne un avis critique — sans réécrire le guide en entier.
+assemblé et donne un avis critique, sans réécrire le guide en entier.
 
 **Pourquoi :** ajouter une étape de relecture améliore la qualité globale
 sans complexifier les agents précédents. C'est un pattern courant dans les
@@ -294,7 +307,7 @@ commentaires de relecture qui pointent des points précis, pas des généralité
 
 ---
 
-## Tâche 7 — Construire le workflow séquentiel complet
+## Tâche 7 : Construire le workflow séquentiel complet
 
 **Ce qu'on te demande :** relier tous les agents et outils dans `main.py`
 dans le bon ordre, pour que chaque étape utilise le résultat de la
@@ -327,7 +340,7 @@ Outil de sauvegarde       → écrit output/study_guide.md
   Example, Practice Exercise, Common Mistakes, Review Comments, Final
   Summary).
 - Afficher des messages de progression clairs pendant l'exécution
-  (`[1/5] Running Explainer Agent...`, etc.) — utile pour comprendre où le
+  (`[1/5] Running Explainer Agent...`, etc.), utile pour comprendre où le
   programme en est, surtout si un modèle local met du temps à répondre.
 - Si la validation échoue, afficher clairement quelles sections manquent
   (mais tu n'es pas obligé de tout corriger automatiquement).
@@ -342,7 +355,7 @@ demandées.
 
 ---
 
-## Tâche 8 — Gestion des erreurs et de la configuration
+## Tâche 8 : Gestion des erreurs et de la configuration
 
 **Ce qu'on te demande :** anticiper les problèmes les plus courants et
 donner des messages d'erreur compréhensibles, plutôt que de laisser le
@@ -351,10 +364,12 @@ programme planter avec une trace d'erreur obscure.
 **Cas à couvrir concrètement :**
 
 - **Sujet vide** : vérifier avant de lancer les agents.
+
   ```python
   if not topic.strip():
       raise ValueError("Topic cannot be empty.")
   ```
+
 - **Variables d'environnement manquantes** (`MODEL_NAME`,
   `OLLAMA_API_BASE`) : vérifier leur présence au tout début du programme,
   avant même de tenter d'appeler un agent, avec un message qui dit quoi
@@ -377,11 +392,11 @@ les erreurs inattendues remonter normalement pendant que tu développes.
 
 **Résultat attendu :** si tu retires ton fichier `.env`, ou si tu coupes
 Ollama, ou si tu passes un sujet vide, le programme doit te dire clairement
-ce qui ne va pas — pas juste planter avec une trace Python illisible.
+ce qui ne va pas, pas juste planter avec une trace Python illisible.
 
 ---
 
-## Tâche 9 — Compléter le README et la réflexion
+## Tâche 9 : Compléter le README et la réflexion
 
 **Ce qu'on te demande :** documenter le projet pour que quelqu'un d'autre
 (un camarade, un mentor) puisse le comprendre et le lancer sans toi.
@@ -397,7 +412,7 @@ Checklist, Reflection, Known Limitations.
   **réellement testées**, pas des commandes copiées sans vérifier qu'elles
   fonctionnent chez toi.
 - **Example Output** : garde-le court (quelques lignes de sortie console
-  suffisent, pas besoin de coller tout le guide généré dans le README —
+  suffisent, pas besoin de coller tout le guide généré dans le README,
   tu peux renvoyer vers `output/study_guide.md`).
 - **Agents / Tools** : explique le rôle de chacun en une ou deux phrases,
   pas juste leur nom de fichier.

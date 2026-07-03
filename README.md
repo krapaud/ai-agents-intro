@@ -56,7 +56,7 @@ cp .env.example .env
 Ollama, accessed through LiteLLM's `ollama_chat/` provider prefix. No API
 keys are required. If you have access to another LiteLLM-compatible provider
 (Gemini, OpenAI, Claude, etc.), you can swap `MODEL_NAME` for that provider's
-model string instead — the agent code itself does not change.
+model string instead; the agent code itself does not change.
 
 `.env` is gitignored and must never be committed. `.env.example` only lists
 variable names, not secrets (this project uses no secrets since Ollama runs
@@ -126,14 +126,14 @@ ai-agents-intro/
 
 ## Agents
 
-- **Explainer Agent** (`agents/explainer_agent.py`) — receives the topic and
+- **Explainer Agent** (`agents/explainer_agent.py`): receives the topic and
   produces a short beginner explanation, a bulleted list of key concepts,
   and one concrete code example.
-- **Practice Designer Agent** (`agents/practice_designer_agent.py`) —
+- **Practice Designer Agent** (`agents/practice_designer_agent.py`):
   receives the topic and the explanation already written, and designs a
   small (10-20 minute) practice exercise with expected input/output and
   hints. It does not repeat the explanation.
-- **Reviewer Agent** (`agents/reviewer_agent.py`) — receives the assembled
+- **Reviewer Agent** (`agents/reviewer_agent.py`): receives the assembled
   draft guide and produces a list of common beginner mistakes plus specific,
   actionable review comments. It does not rewrite the guide.
 
@@ -142,10 +142,10 @@ with a single prompt via `InMemoryRunner` and returning the final text.
 
 ## Tools
 
-- **`save_markdown_file`** (`tools/file_writer.py`) — deterministic file I/O.
+- **`save_markdown_file`** (`tools/file_writer.py`): deterministic file I/O.
   Given a path and Markdown content, creates parent directories if needed,
   writes the file, and returns a success message or a clear error.
-- **`validate_required_sections`** (`tools/validation.py`) — deterministic
+- **`validate_required_sections`** (`tools/validation.py`): deterministic
   structural check. Scans the final Markdown (ignoring fenced code blocks)
   for the required headings (`Topic`, `Simple Explanation`, `Key Concepts`,
   `Example`, `Practice Exercise`, `Common Mistakes`, `Review Comments`,
@@ -171,7 +171,7 @@ with a single prompt via `InMemoryRunner` and returning the final text.
 ## Reflection
 
 **Difference between a direct LLM call and an AI agent.** A direct LLM call
-sends one prompt and returns one completion — there's no persistent role, no
+sends one prompt and returns one completion; there's no persistent role, no
 tool access, and no orchestration. An agent wraps a model with a defined
 role (system instruction), a place in a larger workflow, and (potentially)
 tools it can call. In this project, "agent" mainly means "a model configured
@@ -192,7 +192,7 @@ prompts shorter and outputs more consistent.
 written to disk predictably, regardless of what the model produced.
 `validate_required_sections` gives a deterministic, testable signal about
 structural completeness, decoupled from subjective judgments about content
-quality — the model can be flexible about wording while the tool stays
+quality: the model can be flexible about wording while the tool stays
 strict about structure.
 
 **Most difficult part.** Getting a small local model (`llama3.2:1b`) to
@@ -217,9 +217,9 @@ formatting instructions more strictly, at the cost of slower generation.
   beyond what was requested; the validator tolerates heading-text variation
   via prefix matching but does not enforce exact formatting.
 - No automatic retry/regeneration if an agent's output is structurally poor
-  beyond the missing-section check — the workflow prints a warning and still
+  beyond the missing-section check; the workflow prints a warning and still
   saves the file.
 - No tests directory; validation is done via the `validate_required_sections`
   tool and manual runs against multiple topics.
-- Single-session, sequential execution only — no parallel agent calls, no
+- Single-session, sequential execution only: no parallel agent calls, no
   persistent conversation memory across runs.
